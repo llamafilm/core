@@ -73,6 +73,9 @@ class IotawattUpdater(DataUpdateCoordinator):
 
             self.api = api
 
-        await self.api.update(lastUpdate=self._last_run)
-        self._last_run = None
-        return self.api.getSensors()
+        try:
+            await self.api.update(lastUpdate=self._last_run)
+            self._last_run = None
+            return self.api.getSensors()
+        except CONNECTION_ERRORS as err:
+            raise UpdateFailed("Failed to fetch data") from err
